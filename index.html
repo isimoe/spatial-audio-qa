@@ -1,0 +1,2777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spatial Audio QA — Project Page</title>
+  <style>
+    :root {
+      --bg-page: #f3f7f5;
+      --bg-surface: #ffffff;
+      --bg-subtle: #eaf1ee;
+      --bg-wave: #0f1b20;
+      --text-primary: #132226;
+      --text-secondary: #42595e;
+      --text-muted: #647b80;
+      --accent: #0f766e;
+      --accent-hover: #0d5e58;
+      --accent-soft: #e2f2ef;
+      --accent-border: #8fd0c6;
+      --wave-line: #5eead4;
+      --wave-played: #99f6e4;
+      --wave-cursor: #f59e0b;
+      --border: #d7e3de;
+      --border-strong: #bdd0c9;
+      --spk-1: #0f766e;
+      --spk-1-bg: #dff4f0;
+      --spk-2: #c2591a;
+      --spk-2-bg: #fdece1;
+      --spk-3: #4355b9;
+      --spk-3-bg: #e7eafc;
+      --ok-bg: #e6f6ee;
+      --ok-text: #11643d;
+      --warn-bg: #fef3e2;
+      --warn-text: #9a4a0c;
+      --err-bg: #fdeaea;
+      --err-text: #a52424;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-xs: 0 1px 2px rgba(15, 35, 38, 0.04);
+      --shadow-sm: 0 4px 14px rgba(15, 35, 38, 0.06);
+      --font-serif: Georgia, "Times New Roman", "Noto Serif SC", "Songti SC", serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "PingFang SC", "Noto Sans SC", sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --max-w: 1024px;
+      --pad-x: 24px;
+      --section-gap: 52px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 68px;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad-x);
+    }
+
+    /* Header */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(243, 247, 245, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 12px var(--pad-x);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .brand:hover {
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .brand-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      transition: background-color 140ms ease, color 140ms ease;
+      white-space: nowrap;
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .nav-link:hover {
+      color: var(--accent);
+      background: var(--accent-soft);
+      text-decoration: none;
+    }
+
+    .nav-link.is-active {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent-border);
+    }
+
+    .nav-link--demo {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      background: var(--bg-surface);
+      font-weight: 600;
+    }
+
+    .nav-link--demo:hover {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Views */
+    .view-hidden {
+      display: none !important;
+    }
+
+    /* Hero — compact so comparison peeks above the fold */
+    .hero {
+      padding: 28px 0 22px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .hero-eyebrow .pill-badge {
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px;
+      color: var(--text-primary);
+    }
+
+    .hero-authors {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      margin: 0 0 4px;
+    }
+
+    .hero-affils {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin: 0 0 14px;
+    }
+
+    .hero-question {
+      font-family: var(--font-serif);
+      font-size: 1.06rem;
+      line-height: 1.5;
+      color: var(--text-primary);
+      margin: 0 0 18px;
+      max-width: 78ch;
+      padding-left: 14px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 9px 15px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-strong);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--accent);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .btn-secondary {
+      color: var(--text-secondary);
+      font-weight: 500;
+      padding: 8px 13px;
+    }
+
+    .btn-secondary .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-strong);
+    }
+
+    /* Sections */
+    .section {
+      padding: var(--section-gap) 0 0;
+    }
+
+    .section-kicker {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 6px;
+    }
+
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+      line-height: 1.25;
+      margin: 0 0 8px;
+      color: var(--text-primary);
+    }
+
+    .section-lead {
+      font-size: 0.94rem;
+      color: var(--text-secondary);
+      margin: 0 0 20px;
+      max-width: 76ch;
+    }
+
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-xs);
+    }
+
+    /* Spatial Swap Section (#spatial-swap) */
+    .swap-shell {
+      padding: 20px;
+    }
+
+    .swap-question-bar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 16px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+    }
+
+    .swap-q-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .swap-q-text {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .swap-meta-tag {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Always 2 columns even at 320px per spec */
+    .ab-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .ab-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--border);
+      background: var(--bg-surface);
+      cursor: pointer;
+      font-family: inherit;
+      color: inherit;
+      transition: border-color 150ms ease, background-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    .ab-card:hover {
+      border-color: var(--accent-border);
+      background: #f9fcfb;
+    }
+
+    .ab-card.is-selected {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 0 0 1px rgba(15, 118, 110, 0.12);
+    }
+
+    .ab-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .ab-card-title {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+    }
+
+    .ab-active-pill {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--bg-subtle);
+      color: var(--text-muted);
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .ab-card.is-selected .ab-active-pill {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .spatial-diagram {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .spatial-diagram svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .spk-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+
+    .spk-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    .spk-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Shared Player + Waveform */
+    .shared-player-box {
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+
+    .shared-player-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-size: 0.84rem;
+    }
+
+    .now-playing-label {
+      font-weight: 600;
+      color: var(--text-primary);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scene-indicator {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .sync-hint {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    /* Waveform display (dark bg, light cyan curve, cursor) */
+    .waveform-wrap {
+      position: relative;
+      width: 100%;
+      height: 68px;
+      background: var(--bg-wave);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 1px solid #1d323a;
+    }
+
+    .waveform-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .waveform-cursor {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      background: var(--wave-cursor);
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.75);
+      pointer-events: none;
+      transform: translateX(0);
+      will-change: left;
+    }
+
+    .waveform-time-badge {
+      position: absolute;
+      right: 8px;
+      bottom: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: #a7d7d0;
+      background: rgba(15, 27, 32, 0.78);
+      padding: 1px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    audio.native-audio {
+      width: 100%;
+      height: 40px;
+      display: block;
+    }
+
+    /* Aligned A/B Answers */
+    .ab-answers-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .answer-col {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      background: var(--bg-surface);
+      transition: border-color 150ms ease, background-color 150ms ease;
+    }
+
+    .answer-col.is-selected {
+      border-color: var(--accent-border);
+      background: #f8fcfb;
+    }
+
+    .answer-col-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin: 0 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .answer-block {
+      margin-bottom: 10px;
+    }
+
+    .answer-block:last-child {
+      margin-bottom: 0;
+    }
+
+    .answer-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-bottom: 5px;
+    }
+
+    .answer-tag--model {
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+    }
+
+    .answer-tag--ref {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+    }
+
+    .answer-body {
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .answer-quote {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      color: var(--text-primary);
+      margin: 0;
+      line-height: 1.48;
+    }
+
+    /* Tasks Section (#tasks, #task-1..#task-5) */
+    .task-jump-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .jump-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      color: var(--text-secondary);
+      transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
+    }
+
+    .jump-pill:hover {
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .tasks-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .task-card {
+      padding: 20px;
+    }
+
+    .task-type-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .task-type-name {
+      font-family: var(--font-serif);
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .task-anchor-link {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .task-anchor-link:hover {
+      background: var(--bg-subtle);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .task-question {
+      font-size: 0.96rem;
+      color: var(--text-primary);
+      margin: 0 0 12px;
+      font-weight: 500;
+    }
+
+    .task-audio-row {
+      margin-bottom: 12px;
+    }
+
+    /* Native details/summary reveal */
+    details.reveal-box {
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
+    }
+
+    details.reveal-box summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+      list-style: none;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--accent-border);
+      background: var(--accent-soft);
+      user-select: none;
+    }
+
+    details.reveal-box summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.reveal-box summary::before {
+      content: "▸";
+      display: inline-block;
+      font-size: 0.85rem;
+      transition: transform 150ms ease;
+    }
+
+    details.reveal-box[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details.reveal-box summary:hover {
+      background: #d3ece7;
+    }
+
+    .reveal-content {
+      margin-top: 12px;
+      padding: 12px 14px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+
+    details.reveal-box[open] .reveal-content {
+      animation: revealUp 180ms ease forwards;
+    }
+
+    @keyframes revealUp {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Method Section (#method) */
+    .method-flow {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .method-step {
+      position: relative;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .method-step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .method-step-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .method-step-title {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .method-step-desc {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .method-visual {
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .method-visual svg {
+      width: 100%;
+      height: 54px;
+      display: block;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Dataset Section (#dataset) */
+    .dataset-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .tier-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tier-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .tier-name {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .tier-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid var(--accent-border);
+    }
+
+    .tier-quote {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 0.92rem;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      margin: 0;
+    }
+
+    .tier-scope {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-tile {
+      padding: 16px;
+      text-align: left;
+    }
+
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.15;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Results Section (#results) */
+    .results-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tab-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+
+    .tab-btn {
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 6px 14px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .tab-btn.is-active {
+      background: var(--bg-surface);
+      color: var(--accent);
+      border-color: var(--border);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .results-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .table-card {
+      overflow: hidden;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table.results-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      line-height: 1.4;
+      background: var(--bg-surface);
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .results-table th.col-model,
+    .results-table td.col-model {
+      width: 300px;
+      min-width: 300px;
+      max-width: 300px;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-right: 1px solid var(--border);
+    }
+
+    .results-table thead th {
+      background: #f6faf8;
+      color: var(--text-primary);
+      font-weight: 700;
+      vertical-align: bottom;
+    }
+
+    .results-table thead tr.group-header th {
+      text-align: center;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      border-bottom: 1px solid var(--border);
+      padding: 7px 10px;
+    }
+
+    .results-table thead tr.group-header th.col-model {
+      text-align: left;
+      color: var(--text-secondary);
+    }
+
+    .metric-sub {
+      display: block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .results-table tr.model-group-row td {
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      text-align: left;
+      letter-spacing: 0.03em;
+      padding: 7px 12px;
+    }
+
+    .results-table tbody tr.is-ours td {
+      background: #f0faf7;
+      font-weight: 600;
+    }
+
+    .results-table tbody tr:not(.model-group-row):hover td {
+      background: #f7fbf9;
+    }
+
+    .val-missing {
+      color: var(--text-muted);
+    }
+
+    .val-best {
+      color: var(--accent);
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .table-footnotes {
+      padding: 12px 16px;
+      background: #fafcfb;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .table-footnotes p {
+      margin: 0 0 4px;
+    }
+
+    .table-footnotes p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer / Citation (#citation) */
+    .site-footer {
+      margin-top: var(--section-gap);
+      padding: 36px 0 48px;
+      border-top: 1px solid var(--border);
+      background: #edf4f1;
+    }
+
+    .bibtex-card {
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+
+    .bibtex-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .bibtex-head h3 {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      margin: 0;
+    }
+
+    pre.bibtex-code {
+      margin: 0;
+      padding: 12px 14px;
+      background: var(--bg-page);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      overflow-x: auto;
+      color: var(--text-primary);
+    }
+
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    /* QA Preview Page (/demo/) */
+    .demo-view {
+      padding: 24px 0 52px;
+    }
+
+    .demo-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .demo-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--warn-bg);
+      color: var(--warn-text);
+      border: 1px solid #f4cfa0;
+    }
+
+    .demo-mode-badge.is-live {
+      background: var(--ok-bg);
+      color: var(--ok-text);
+      border-color: #9dd9bc;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .demo-panel {
+      padding: 20px;
+    }
+
+    .demo-panel h2 {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      margin: 0 0 12px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .select-input,
+    .textarea-input {
+      width: 100%;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+      margin-bottom: 12px;
+    }
+
+    .textarea-input {
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .prompt-chip {
+      font-family: inherit;
+      font-size: 0.78rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .prompt-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .demo-submit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .demo-status {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      min-height: 1.2em;
+    }
+
+    .demo-response-box {
+      min-height: 128px;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--bg-page);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .demo-response-text {
+      margin: 0;
+      animation: fadeInAnswer 180ms ease forwards;
+    }
+
+    @keyframes fadeInAnswer {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .demo-error-box {
+      background: var(--err-bg);
+      border: 1px solid #f0b8b8;
+      color: var(--err-text);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.86rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .demo-debug-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 60;
+      background: var(--text-primary);
+      color: #ffffff;
+      font-size: 0.84rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+
+    .toast.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 820px) {
+      .method-flow,
+      .dataset-cards,
+      .demo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ab-answers-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      :root {
+        --pad-x: 15px;
+        --section-gap: 40px;
+      }
+
+      .mobile-menu-btn {
+        display: inline-flex;
+      }
+
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+      }
+
+      .nav-links.is-open {
+        display: flex;
+      }
+
+      .header-inner {
+        flex-wrap: wrap;
+      }
+
+      .swap-shell,
+      .task-card,
+      .demo-panel {
+        padding: 14px;
+      }
+
+      /* Keep A/B two-column compact diagrams even down to 320px */
+      .ab-grid {
+        gap: 8px;
+      }
+
+      .ab-card {
+        padding: 9px;
+      }
+
+      .ab-card-title {
+        font-size: 0.8rem;
+      }
+
+      .spk-legend {
+        font-size: 0.7rem;
+        gap: 4px 6px;
+      }
+    }
+
+    /* Respect reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#top" class="brand" id="brandLink">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>Spatial Audio QA</span>
+      </a>
+      <button type="button" class="mobile-menu-btn" id="mobileMenuBtn" aria-expanded="false" aria-controls="mainNav">
+        Menu
+      </button>
+      <nav class="nav-links" id="mainNav" aria-label="Primary navigation">
+        <a class="nav-link" href="#spatial-swap" data-nav="project">Comparison</a>
+        <a class="nav-link" href="#tasks" data-nav="project">Examples</a>
+        <a class="nav-link" href="#method" data-nav="project">Method</a>
+        <a class="nav-link" href="#dataset" data-nav="project">Dataset</a>
+        <a class="nav-link" href="#results" data-nav="project">Results</a>
+        <button type="button" class="nav-link nav-link--demo" id="openDemoBtn">QA Preview</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN PROJECT PAGE VIEW -->
+  <main id="projectView">
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="container">
+        <div class="hero-eyebrow">
+          <span class="pill-badge">Project Page</span>
+          <span>Spatial Audio Understanding &amp; Reasoning</span>
+        </div>
+        <h1 class="hero-title">Spatial Audio QA: Grounding Multi-Speaker Reasoning in Acoustic Direction</h1>
+        <p class="hero-authors">Author List Pending Final Release &middot; Corresponding Author TBD</p>
+        <p class="hero-affils">Affiliations &amp; Formal Venue Pending &middot; Interactive Preview Build</p>
+        <p class="hero-question">
+          Do audio language models genuinely ground their answers in <em>where</em> each speaker is located, or do they rely on transcript shortcuts when speakers swap positions?
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#spatial-swap">Listen to A/B Spatial Swap</a>
+          <button type="button" class="btn btn-secondary" data-pending-link="Paper">
+            <span class="status-dot" aria-hidden="true"></span>Paper
+          </button>
+          <button type="button" class="btn btn-secondary" data-pending-link="Code">
+            <span class="status-dot" aria-hidden="true"></span>Code
+          </button>
+          <button type="button" class="btn btn-secondary" data-pending-link="Data">
+            <span class="status-dot" aria-hidden="true"></span>Data
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Spatial Swap Comparison (#spatial-swap) -->
+    <section class="section" id="spatial-swap">
+      <div class="container">
+        <p class="section-kicker">Controlled Counterfactual Test</p>
+        <h2 class="section-title">Spatial Swap: Same Words, Swapped Directions</h2>
+        <p class="section-lead">
+          Hold the dialogue and timing fixed, mirror the speakers' spatial positions across the microphone array, and ask the exact same question. Click <strong>Scene A</strong> or <strong>Scene B</strong> to switch tracks while preserving playback position.
+        </p>
+
+        <div class="card swap-shell">
+          <div class="swap-question-bar">
+            <div>
+              <span class="swap-q-label">Fixed Question</span>
+              <span class="swap-q-text">“What task did the speaker on the left (&minus;45&deg;) ask to schedule?”</span>
+            </div>
+            <span class="swap-meta-tag">6.0 s Stereo Preview &middot; Wear Headphones</span>
+          </div>
+
+          <!-- Side-by-side A/B spatial diagrams (stays 2-col at 320px) -->
+          <div class="ab-grid" role="group" aria-label="Select Scene A or Scene B">
+            <button type="button" class="ab-card is-selected" id="sceneBtnA" data-scene="A" aria-pressed="true">
+              <div class="ab-card-head">
+                <span class="ab-card-title">Scene A &middot; Original</span>
+                <span class="ab-active-pill" id="pillA">Active</span>
+              </div>
+              <div class="spatial-diagram" id="diagramA" aria-label="Scene A spatial layout: Speaker 1 at minus 45 degrees left, Speaker 2 at plus 45 degrees right"></div>
+              <div class="spk-legend">
+                <span class="spk-chip"><span class="spk-dot" style="background:var(--spk-1)"></span>Spk 1: &minus;45&deg; (L)</span>
+                <span class="spk-chip"><span class="spk-dot" style="background:var(--spk-2)"></span>Spk 2: +45&deg; (R)</span>
+              </div>
+            </button>
+
+            <button type="button" class="ab-card" id="sceneBtnB" data-scene="B" aria-pressed="false">
+              <div class="ab-card-head">
+                <span class="ab-card-title">Scene B &middot; Swapped</span>
+                <span class="ab-active-pill" id="pillB">Select</span>
+              </div>
+              <div class="spatial-diagram" id="diagramB" aria-label="Scene B spatial layout: Speaker 2 at minus 45 degrees left, Speaker 1 at plus 45 degrees right"></div>
+              <div class="spk-legend">
+                <span class="spk-chip"><span class="spk-dot" style="background:var(--spk-2)"></span>Spk 2: &minus;45&deg; (L)</span>
+                <span class="spk-chip"><span class="spk-dot" style="background:var(--spk-1)"></span>Spk 1: +45&deg; (R)</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- Shared Waveform + Native Audio Player -->
+          <div class="shared-player-box">
+            <div class="shared-player-top">
+              <div class="now-playing-label">
+                <span>Current track:</span>
+                <span class="scene-indicator" id="activeSceneName">Scene A &middot; Original (Spk 1 Left / Spk 2 Right)</span>
+              </div>
+              <span class="sync-hint">Switching A/B pauses &amp; preserves timestamp</span>
+            </div>
+            <div class="waveform-wrap" data-wave-id="swap">
+              <canvas class="waveform-canvas" id="wave-swap"></canvas>
+              <div class="waveform-cursor" id="cursor-swap"></div>
+              <span class="waveform-time-badge" id="time-swap">0.0s / 6.0s</span>
+            </div>
+            <audio id="audio-swap" class="native-audio" controls preload="metadata"></audio>
+          </div>
+
+          <!-- Aligned Answers -->
+          <div class="ab-answers-grid">
+            <div class="answer-col is-selected" id="ansColA">
+              <div class="answer-col-title">
+                <span>Version A &middot; Original Layout</span>
+                <span style="color:var(--spk-1); font-weight:700;">Left = Spk 1</span>
+              </div>
+              <div class="answer-block">
+                <span class="answer-tag answer-tag--model">Model Raw Output (Preview)</span>
+                <p class="answer-quote">“The speaker on the left (&minus;45&deg;, Speaker 1) asked to schedule the acoustic array calibration for Tuesday morning.”</p>
+              </div>
+              <div class="answer-block">
+                <span class="answer-tag answer-tag--ref">Reference Answer</span>
+                <p class="answer-body">Schedule the <strong>acoustic array calibration</strong> (spoken by Speaker 1 at &minus;45&deg;).</p>
+              </div>
+            </div>
+
+            <div class="answer-col" id="ansColB">
+              <div class="answer-col-title">
+                <span>Version B &middot; Spatially Swapped</span>
+                <span style="color:var(--spk-2); font-weight:700;">Left = Spk 2</span>
+              </div>
+              <div class="answer-block">
+                <span class="answer-tag answer-tag--model">Model Raw Output (Preview)</span>
+                <p class="answer-quote">“The speaker on the left (&minus;45&deg;, Speaker 2) asked to schedule the dataset annotation review for Thursday afternoon.”</p>
+              </div>
+              <div class="answer-block">
+                <span class="answer-tag answer-tag--ref">Reference Answer</span>
+                <p class="answer-body">Schedule the <strong>dataset annotation review</strong> (spoken by Speaker 2, now at &minus;45&deg;).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Five Task Examples (#tasks, #task-1..#task-5) -->
+    <section class="section" id="tasks">
+      <div class="container">
+        <p class="section-kicker">Benchmark Examples</p>
+        <h2 class="section-title">Five Spatial Audio Reasoning Tasks</h2>
+        <p class="section-lead">
+          Listen to one representative example per task type. Jump directly to any task using the anchors below, play the clip with its synchronized waveform cursor, and expand <strong>Reveal answer</strong> to inspect the ground truth.
+        </p>
+
+        <div class="task-jump-bar" aria-label="Jump to task examples">
+          <a class="jump-pill" href="#task-1">1. Source Counting</a>
+          <a class="jump-pill" href="#task-2">2. Direction Localization</a>
+          <a class="jump-pill" href="#task-3">3. Active-Time Selection</a>
+          <a class="jump-pill" href="#task-4">4. Temporal Order Comparison</a>
+          <a class="jump-pill" href="#task-5">5. Target Transcription</a>
+        </div>
+
+        <div class="tasks-stack" id="tasksContainer"></div>
+      </div>
+    </section>
+
+    <!-- 3. Method (#method) -->
+    <section class="section" id="method">
+      <div class="container">
+        <p class="section-kicker">Approach</p>
+        <h2 class="section-title">Method Overview</h2>
+        <p class="section-lead">
+          A three-stage pipeline converts raw multi-channel microphone array recordings into spatially grounded representations for multimodal reasoning.
+        </p>
+
+        <div class="method-flow">
+          <article class="card method-step">
+            <div class="method-step-head">
+              <span class="method-step-num">1</span>
+              <h3 class="method-step-title">Array Recording</h3>
+            </div>
+            <p class="method-step-desc">
+              Multi-channel microphone array captures real-room acoustic scenes, preserving inter-channel time and level differences across overlapping speakers.
+            </p>
+            <div class="method-visual" aria-hidden="true">
+              <svg viewBox="0 0 240 54" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="52" cy="27" r="4" fill="#0f766e"/>
+                <circle cx="76" cy="27" r="4" fill="#0f766e"/>
+                <circle cx="100" cy="27" r="4" fill="#0f766e"/>
+                <circle cx="124" cy="27" r="4" fill="#0f766e"/>
+                <line x1="42" y1="27" x2="134" y2="27" stroke="#8fd0c6" stroke-width="2"/>
+                <path d="M156 16 Q168 27 156 38 M168 11 Q184 27 168 43 M180 6 Q200 27 180 48" fill="none" stroke="#0f766e" stroke-width="1.8" stroke-linecap="round"/>
+                <text x="16" y="47" font-size="9" fill="#647b80" font-family="sans-serif">4-ch / Multi-ch Array</text>
+              </svg>
+            </div>
+          </article>
+
+          <article class="card method-step">
+            <div class="method-step-head">
+              <span class="method-step-num">2</span>
+              <h3 class="method-step-title">Localization &amp; Separation</h3>
+            </div>
+            <p class="method-step-desc">
+              Spatial front-end estimates each source's azimuth trajectory and separates concurrent speech into clean, direction-tagged audio streams.
+            </p>
+            <div class="method-visual" aria-hidden="true">
+              <svg viewBox="0 0 240 54" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 27 L84 14 M24 27 L84 40" stroke="#bdd0c9" stroke-width="1.6" stroke-dasharray="3 2"/>
+                <circle cx="24" cy="27" r="5" fill="#132226"/>
+                <rect x="86" y="7" width="132" height="15" rx="4" fill="#dff4f0" stroke="#0f766e"/>
+                <text x="94" y="18" font-size="9" fill="#0f766e" font-weight="700" font-family="sans-serif">Spk 1 · -45° separated</text>
+                <rect x="86" y="31" width="132" height="15" rx="4" fill="#fdece1" stroke="#c2591a"/>
+                <text x="94" y="42" font-size="9" fill="#c2591a" font-weight="700" font-family="sans-serif">Spk 2 · +45° separated</text>
+              </svg>
+            </div>
+          </article>
+
+          <article class="card method-step">
+            <div class="method-step-head">
+              <span class="method-step-num">3</span>
+              <h3 class="method-step-title">Spatial Info + Audio to Model</h3>
+            </div>
+            <p class="method-step-desc">
+              Explicit spatial coordinates and acoustic embeddings are jointly fed into the language model to answer direction-conditioned queries accurately.
+            </p>
+            <div class="method-visual" aria-hidden="true">
+              <svg viewBox="0 0 240 54" xmlns="http://www.w3.org/2000/svg">
+                <rect x="14" y="10" width="66" height="14" rx="3" fill="#dff4f0" stroke="#0f766e"/>
+                <text x="22" y="20" font-size="8.5" fill="#0f766e" font-family="sans-serif">DoA Tokens</text>
+                <rect x="14" y="30" width="66" height="14" rx="3" fill="#eaf1ee" stroke="#647b80"/>
+                <text x="20" y="40" font-size="8.5" fill="#42595e" font-family="sans-serif">Audio Embed</text>
+                <path d="M84 17 L106 27 M84 37 L106 27" stroke="#0f766e" stroke-width="1.6"/>
+                <rect x="108" y="11" width="64" height="32" rx="6" fill="#0f766e"/>
+                <text x="122" y="30" font-size="10" fill="#ffffff" font-weight="700" font-family="sans-serif">Spatial LM</text>
+                <path d="M174 27 L190 27" stroke="#0f766e" stroke-width="1.6"/>
+                <rect x="192" y="15" width="38" height="24" rx="4" fill="#ffffff" stroke="#0f766e"/>
+                <text x="199" y="30" font-size="9" fill="#132226" font-weight="700" font-family="sans-serif">Ans</text>
+              </svg>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Real-World Dataset (#dataset) -->
+    <section class="section" id="dataset">
+      <div class="container">
+        <p class="section-kicker">Real-World Benchmark</p>
+        <h2 class="section-title">Evaluation Suite Across Three Difficulty Tiers</h2>
+        <p class="section-lead">
+          Recorded in real acoustic environments with multi-channel arrays. Tasks progress from basic scene perception to temporal-spatial binding and target-speaker transcription under overlap.
+        </p>
+
+        <div class="dataset-cards">
+          <article class="card tier-card">
+            <div class="tier-head">
+              <h3 class="tier-name">Easy</h3>
+              <span class="tier-badge">Perception</span>
+            </div>
+            <p class="tier-quote">“How many distinct speakers are talking, and where is Speaker 1 located?”</p>
+            <p class="tier-scope">
+              <strong>Scope:</strong> Source counting and coarse direction-of-arrival (DoA) localization in single- and multi-speaker scenes.
+            </p>
+          </article>
+
+          <article class="card tier-card">
+            <div class="tier-head">
+              <h3 class="tier-name">Medium</h3>
+              <span class="tier-badge">Spatio-Temporal</span>
+            </div>
+            <p class="tier-quote">“Which direction is active between 2.0 s and 4.0 s, and who started speaking first?”</p>
+            <p class="tier-scope">
+              <strong>Scope:</strong> Active-time source selection, speaker turn ordering, and cross-speaker temporal comparison conditioned on azimuth.
+            </p>
+          </article>
+
+          <article class="card tier-card">
+            <div class="tier-head">
+              <h3 class="tier-name">Hard</h3>
+              <span class="tier-badge">Selective ASR &amp; QA</span>
+            </div>
+            <p class="tier-quote">“Transcribe only the speaker at &minus;45&deg; while ignoring the overlapping speaker on the right.”</p>
+            <p class="tier-scope">
+              <strong>Scope:</strong> Target-direction transcription and spatial counterfactual QA under concurrent speech overlap.
+            </p>
+          </article>
+        </div>
+
+        <div class="stats-strip" aria-label="Dataset statistics summary">
+          <div class="card stat-tile">
+            <div class="stat-num">5</div>
+            <div class="stat-label">Core Task Families</div>
+            <div class="stat-sub">Counting &rarr; Target ASR</div>
+          </div>
+          <div class="card stat-tile">
+            <div class="stat-num">16</div>
+            <div class="stat-label">Evaluation Metrics</div>
+            <div class="stat-sub">Across Easy / Medium / Hard</div>
+          </div>
+          <div class="card stat-tile">
+            <div class="stat-num">n = 120</div>
+            <div class="stat-label">Verified Task Denominator</div>
+            <div class="stat-sub">Per-group split (pending audit)</div>
+          </div>
+          <div class="card stat-tile">
+            <div class="stat-num">TBD</div>
+            <div class="stat-label">Unique Clips / Total Hours</div>
+            <div class="stat-sub">Final release stats pending</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Results (#results) -->
+    <section class="section" id="results">
+      <div class="container">
+        <p class="section-kicker">Quantitative Evaluation</p>
+        <h2 class="section-title">Benchmark Results</h2>
+        <p class="section-lead">
+          Switch between <strong>Easy</strong>, <strong>Medium</strong>, <strong>Hard</strong>, and <strong>All metrics</strong>. Complete model groups, metric directions, denominators, and missing values are preserved.
+        </p>
+
+        <div class="results-toolbar">
+          <div class="tab-group" role="tablist" aria-label="Results metric views">
+            <button type="button" class="tab-btn is-active" role="tab" aria-selected="true" data-results-tab="easy">Easy</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-results-tab="medium">Medium</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-results-tab="hard">Hard</button>
+            <button type="button" class="tab-btn" role="tab" aria-selected="false" data-results-tab="all">All metrics</button>
+          </div>
+          <span class="results-hint" id="resultsViewNote">Showing Easy metrics &middot; Scroll table horizontally on narrow screens</span>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll" id="resultsTableScroll">
+            <table class="results-table" id="resultsTable"></table>
+          </div>
+          <div class="table-footnotes">
+            <p><strong>Notes:</strong> <code>&uarr;</code> higher is better; <code>&darr;</code> lower is better; <code>&mdash;</code> denotes unsupported input format or unavailable metric. Preview values marked with <code>*</code> await final CSV export verification.</p>
+            <p><strong>Audit item:</strong> Confirm 0/120 group assignment for the two <em>Spatial-Omni</em> rows against the raw evaluation export before public release.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Footer & Citation (#citation) -->
+    <footer class="site-footer" id="citation">
+      <div class="container">
+        <div class="card bibtex-card">
+          <div class="bibtex-head">
+            <h3>BibTeX Citation</h3>
+            <button type="button" class="btn btn-secondary" id="copyBibtexBtn">Copy BibTeX</button>
+          </div>
+          <pre class="bibtex-code" id="bibtexText">@article{spatialaudioqa2026,
+  title   = {Spatial Audio QA: Grounding Multi-Speaker Reasoning in Acoustic Direction},
+  author  = {Author List Pending},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026}
+}</pre>
+        </div>
+        <div class="footer-meta">
+          <div>
+            <strong>Spatial Audio QA</strong> &middot; Static GitHub Pages ready (relative asset paths) &middot; Contact: <a href="mailto:contact@example.org">contact@example.org</a>
+          </div>
+          <div class="footer-links">
+            <a href="#top">Back to top</a>
+            <a href="#spatial-swap">Comparison</a>
+            <a href="#tasks">Examples</a>
+            <a href="#results">Results</a>
+            <button type="button" class="nav-link" id="footerOpenDemoBtn" style="padding:0; font-size:0.84rem; color:var(--accent);">QA Preview</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- QA PREVIEW VIEW (/demo/) -->
+  <main id="demoView" class="demo-view view-hidden" aria-label="QA Preview">
+    <div class="container">
+      <div class="demo-top-bar">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button type="button" class="btn btn-secondary" id="backToProjectBtn">&larr; Back to Project Page</button>
+          <span class="demo-mode-badge" id="demoModeBadge">QA Preview</span>
+        </div>
+        <span style="font-size:0.8rem; color:var(--text-muted);">Frontend interface ready for <code>POST /api/ask</code></span>
+      </div>
+
+      <div class="demo-grid">
+        <!-- Left: Audio & Spatial Diagram -->
+        <section class="card demo-panel">
+          <h2>1. Select Scene &amp; Listen</h2>
+          <label class="field-label" for="demoSceneSelect">Audio Scene</label>
+          <select id="demoSceneSelect" class="select-input">
+            <option value="swapA">Scene A &middot; Original (Spk 1 at &minus;45&deg;, Spk 2 at +45&deg;)</option>
+            <option value="swapB">Scene B &middot; Swapped (Spk 2 at &minus;45&deg;, Spk 1 at +45&deg;)</option>
+            <option value="meeting3">3-Speaker Meeting (&minus;60&deg;, 0&deg;, +60&deg;)</option>
+          </select>
+
+          <div class="spatial-diagram" id="demoSpatialDiagram" style="margin-bottom:12px;"></div>
+
+          <div class="waveform-wrap" data-wave-id="demo">
+            <canvas class="waveform-canvas" id="wave-demo"></canvas>
+            <div class="waveform-cursor" id="cursor-demo"></div>
+            <span class="waveform-time-badge" id="time-demo">0.0s / 6.0s</span>
+          </div>
+          <audio id="audio-demo" class="native-audio" controls preload="metadata"></audio>
+        </section>
+
+        <!-- Right: Question Form & Model Output -->
+        <section class="card demo-panel">
+          <h2>2. Ask a Spatial Question</h2>
+          <form id="demoQaForm">
+            <label class="field-label" for="demoQuestionInput">Question</label>
+            <textarea id="demoQuestionInput" class="textarea-input" placeholder="Ask about speaker count, direction, timing, or target transcription...">What task did the speaker on the left (-45°) ask to schedule?</textarea>
+
+            <div class="prompt-chips" id="demoPromptChips" aria-label="Example questions"></div>
+
+            <div class="demo-submit-row">
+              <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <button type="submit" class="btn btn-primary" id="demoSubmitBtn">Submit Question</button>
+                <label class="demo-debug-toggle">
+                  <input type="checkbox" id="simulateErrorToggle" />
+                  Simulate timeout / retry
+                </label>
+              </div>
+              <span class="demo-status" id="demoStatus" role="status" aria-live="polite">Ready</span>
+            </div>
+          </form>
+
+          <label class="field-label">Model Response</label>
+          <div class="demo-response-box" id="demoResponseBox">
+            <p style="margin:0; color:var(--text-muted);">Submit a question to inspect the spatial QA response. Switching scenes clears the previous answer and cancels any stale in-flight request.</p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* =====================================================================
+       * 1. ASSET CONFIGURATION (Relative paths for GitHub Pages + Built-in
+       *    Stereo WAV Fallback so preview plays immediately without a server)
+       * ===================================================================== */
+      const ASSET_CONFIG = {
+        useSyntheticFallback: true, // Set to false once static ./audio/*.wav files are placed
+        liveApiEndpoint: '',        // Set to '/api/ask' when backend inference service is live
+        tracks: {
+          swapA: { path: './audio/swap_a.wav', duration: 6.0, preset: 'swapA' },
+          swapB: { path: './audio/swap_b.wav', duration: 6.0, preset: 'swapB' },
+          task1: { path: './audio/task_1_counting.wav', duration: 5.5, preset: 'task1' },
+          task2: { path: './audio/task_2_direction.wav', duration: 5.0, preset: 'task2' },
+          task3: { path: './audio/task_3_active_time.wav', duration: 6.0, preset: 'task3' },
+          task4: { path: './audio/task_4_temporal_order.wav', duration: 5.5, preset: 'task4' },
+          task5: { path: './audio/task_5_target_asr.wav', duration: 6.0, preset: 'task5' },
+          meeting3: { path: './audio/demo_meeting3.wav', duration: 6.0, preset: 'meeting3' }
+        }
+      };
+
+      /* =====================================================================
+       * 2. PROCEDURAL STEREO WAV GENERATOR (Creates real stereo-panned WAV
+       *    Blobs + precomputed waveform peak arrays for instant playback)
+       * ===================================================================== */
+      const generatedCache = {};
+
+      function createStereoTrack(preset, durationSec) {
+        if (generatedCache[preset]) return generatedCache[preset];
+        const sampleRate = 16000;
+        const numSamples = Math.floor(sampleRate * durationSec);
+        const left = new Float32Array(numSamples);
+        const right = new Float32Array(numSamples);
+
+        function addUtterance(startS, endS, f0, pan, syllableHz) {
+          // pan: -1 (full left) to +1 (full right)
+          const lGain = Math.cos(((pan + 1) * Math.PI) / 4);
+          const rGain = Math.sin(((pan + 1) * Math.PI) / 4);
+          const s0 = Math.max(0, Math.floor(startS * sampleRate));
+          const s1 = Math.min(numSamples, Math.floor(endS * sampleRate));
+          for (let i = s0; i < s1; i++) {
+            const t = (i - s0) / sampleRate;
+            const total = (s1 - s0) / sampleRate;
+            const env = Math.min(1, t / 0.04) * Math.min(1, (total - t) / 0.06);
+            const syll = 0.55 + 0.45 * Math.sin(2 * Math.PI * syllableHz * t);
+            const vibrato = 1 + 0.015 * Math.sin(2 * Math.PI * 5.2 * t);
+            const f = f0 * vibrato;
+            // Warm voice-like harmonic blend
+            const sig = (
+              0.52 * Math.sin(2 * Math.PI * f * t) +
+              0.28 * Math.sin(2 * Math.PI * f * 2 * t) +
+              0.14 * Math.sin(2 * Math.PI * f * 3 * t) +
+              0.06 * Math.sin(2 * Math.PI * f * 4 * t)
+            ) * env * syll * 0.42;
+            left[i] += sig * lGain;
+            right[i] += sig * rGain;
+          }
+        }
+
+        if (preset === 'swapA') {
+          // Spk 1 (lower pitch 175 Hz) at Left (-0.82), Spk 2 (higher pitch 265 Hz) at Right (+0.82)
+          addUtterance(0.3, 2.7, 175, -0.82, 4.2);
+          addUtterance(2.1, 4.8, 265, +0.82, 5.1);
+          addUtterance(4.6, 5.7, 175, -0.82, 3.8);
+        } else if (preset === 'swapB') {
+          // Exact same utterances & timing, spatially mirrored!
+          addUtterance(0.3, 2.7, 175, +0.82, 4.2);
+          addUtterance(2.1, 4.8, 265, -0.82, 5.1);
+          addUtterance(4.6, 5.7, 175, +0.82, 3.8);
+        } else if (preset === 'task1') {
+          // 3 distinct speakers
+          addUtterance(0.2, 1.9, 165, -0.85, 4.0);
+          addUtterance(1.6, 3.5, 245, 0.0, 4.8);
+          addUtterance(3.2, 5.2, 310, +0.85, 5.4);
+        } else if (preset === 'task2') {
+          // Single target speaker at +60 deg right
+          addUtterance(0.4, 2.1, 210, +0.85, 4.5);
+          addUtterance(2.6, 4.6, 210, +0.85, 4.2);
+        } else if (preset === 'task3') {
+          // Active time selection: Left 0.3-2.2s, Right 2.4-4.3s, Center 4.5-5.7s
+          addUtterance(0.3, 2.2, 180, -0.85, 4.1);
+          addUtterance(2.4, 4.3, 275, +0.85, 5.0);
+          addUtterance(4.5, 5.7, 220, 0.0, 4.4);
+        } else if (preset === 'task4') {
+          // Right starts at 0.3s, Left starts at 1.9s
+          addUtterance(0.3, 2.8, 260, +0.82, 4.9);
+          addUtterance(1.9, 5.1, 170, -0.82, 3.9);
+        } else if (preset === 'task5') {
+          // Heavy overlap: Left target & Right interferer
+          addUtterance(0.3, 5.6, 185, -0.85, 4.3);
+          addUtterance(0.9, 5.1, 285, +0.85, 5.3);
+        } else {
+          // meeting3
+          addUtterance(0.2, 2.1, 170, -0.9, 4.0);
+          addUtterance(1.8, 4.1, 235, 0.0, 4.7);
+          addUtterance(3.7, 5.8, 300, +0.9, 5.2);
+        }
+
+        // Compute 180 waveform peaks
+        const bins = 180;
+        const step = Math.floor(numSamples / bins);
+        const peaks = [];
+        for (let b = 0; b < bins; b++) {
+          let maxAbs = 0;
+          const base = b * step;
+          for (let j = 0; j < step; j++) {
+            const v = Math.max(Math.abs(left[base + j] || 0), Math.abs(right[base + j] || 0));
+            if (v > maxAbs) maxAbs = v;
+          }
+          peaks.push(Math.min(1, maxAbs * 1.45));
+        }
+
+        // Encode 16-bit PCM Stereo WAV
+        const dataBytes = numSamples * 4;
+        const buf = new ArrayBuffer(44 + dataBytes);
+        const view = new DataView(buf);
+        function writeStr(off, s) {
+          for (let i = 0; i < s.length; i++) view.setUint8(off + i, s.charCodeAt(i));
+        }
+        writeStr(0, 'RIFF');
+        view.setUint32(4, 36 + dataBytes, true);
+        writeStr(8, 'WAVE');
+        writeStr(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true); // PCM
+        view.setUint16(22, 2, true); // Stereo
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * 4, true);
+        view.setUint16(32, 4, true);
+        view.setUint16(34, 16, true);
+        writeStr(36, 'data');
+        view.setUint32(40, dataBytes, true);
+
+        let offset = 44;
+        for (let i = 0; i < numSamples; i++) {
+          const l = Math.max(-1, Math.min(1, left[i]));
+          const r = Math.max(-1, Math.min(1, right[i]));
+          view.setInt16(offset, l < 0 ? l * 0x8000 : l * 0x7fff, true);
+          view.setInt16(offset + 2, r < 0 ? r * 0x8000 : r * 0x7fff, true);
+          offset += 4;
+        }
+
+        const blob = new Blob([buf], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+        generatedCache[preset] = { url, peaks, duration: durationSec };
+        return generatedCache[preset];
+      }
+
+      /* =====================================================================
+       * 3. SPATIAL AZIMUTH SVG RENDERER (Consistent Speaker Colors)
+       * ===================================================================== */
+      function renderSpatialSvg(containerEl, speakers) {
+        // Semicircle radar from -90 deg (left) to +90 deg (right), 0 deg top-center
+        const cx = 160, cy = 152, rOuter = 112, rMid = 74;
+        const angleToXY = (deg, radius) => {
+          const rad = ((deg - 90) * Math.PI) / 180;
+          return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
+        };
+
+        const ticks = [-90, -45, 0, 45, 90].map(deg => {
+          const p1 = angleToXY(deg, rOuter);
+          const p2 = angleToXY(deg, rOuter + 7);
+          const pt = angleToXY(deg, rOuter + 20);
+          const label = deg > 0 ? `+${deg}°` : `${deg}°`;
+          return `
+            <line x1="${cx}" y1="${cy}" x2="${p1.x.toFixed(1)}" y2="${p1.y.toFixed(1)}" stroke="#e3ece8" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="${p1.x.toFixed(1)}" y1="${p1.y.toFixed(1)}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="#9eb5ae" stroke-width="1.2"/>
+            <text x="${pt.x.toFixed(1)}" y="${(pt.y + 3).toFixed(1)}" text-anchor="middle" font-size="10.5" fill="#647b80" font-family="sans-serif">${label}</text>
+          `;
+        }).join('');
+
+        const nodes = speakers.map(s => {
+          const pos = angleToXY(s.deg, rMid + 14);
+          return `
+            <line x1="${cx}" y1="${cy}" x2="${pos.x.toFixed(1)}" y2="${pos.y.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.45"/>
+            <circle cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="22" fill="${s.bg}" stroke="${s.color}" stroke-width="2.2"/>
+            <text x="${pos.x.toFixed(1)}" y="${(pos.y - 2).toFixed(1)}" text-anchor="middle" font-size="11" font-weight="700" fill="${s.color}" font-family="sans-serif">${s.label}</text>
+            <text x="${pos.x.toFixed(1)}" y="${(pos.y + 11).toFixed(1)}" text-anchor="middle" font-size="9.5" fill="#42595e" font-family="sans-serif">${s.deg > 0 ? '+' + s.deg : s.deg}°</text>
+          `;
+        }).join('');
+
+        containerEl.innerHTML = `
+          <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg" role="img">
+            <path d="M ${cx - rOuter} ${cy} A ${rOuter} ${rOuter} 0 0 1 ${cx + rOuter} ${cy}" fill="#f6faf8" stroke="#c8d8d2" stroke-width="1.4"/>
+            <path d="M ${cx - rMid} ${cy} A ${rMid} ${rMid} 0 0 1 ${cx + rMid} ${cy}" fill="none" stroke="#dce7e2" stroke-width="1" stroke-dasharray="3 3"/>
+            <line x1="${cx - rOuter - 8}" y1="${cy}" x2="${cx + rOuter + 8}" y2="${cy}" stroke="#c8d8d2" stroke-width="1.2"/>
+            ${ticks}
+            ${nodes}
+            <rect x="${cx - 20}" y="${cy - 8}" width="40" height="16" rx="8" fill="#132226"/>
+            <circle cx="${cx - 10}" cy="${cy}" r="2.2" fill="#5eead4"/>
+            <circle cx="${cx}" cy="${cy}" r="2.2" fill="#5eead4"/>
+            <circle cx="${cx + 10}" cy="${cy}" r="2.2" fill="#5eead4"/>
+            <text x="${cx}" y="${cy + 20}" text-anchor="middle" font-size="9.5" font-weight="600" fill="#42595e" font-family="sans-serif">Mic Array</text>
+          </svg>
+        `;
+      }
+
+      /* =====================================================================
+       * 4. WAVEFORM DRAWING & PLAYHEAD SYNC (rAF on play, stop on pause,
+       *    instant jump on seeked, park at end on ended, mutual exclusion)
+       * ===================================================================== */
+      const waveformRegistry = new Map();
+      const allAudioEls = new Set();
+
+      function drawWaveform(canvas, peaks) {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        const w = Math.max(240, Math.floor(rect.width || 600));
+        const h = Math.max(48, Math.floor(rect.height || 68));
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        ctx.fillStyle = '#0f1b20';
+        ctx.fillRect(0, 0, w, h);
+
+        // Center baseline
+        ctx.strokeStyle = 'rgba(94, 234, 212, 0.18)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, h / 2);
+        ctx.lineTo(w, h / 2);
+        ctx.stroke();
+
+        // Waveform bars / line in light cyan
+        const step = w / peaks.length;
+        ctx.fillStyle = '#5eead4';
+        for (let i = 0; i < peaks.length; i++) {
+          const amp = Math.max(2, peaks[i] * (h * 0.42));
+          const x = i * step;
+          const bw = Math.max(1.5, step - 1.2);
+          ctx.fillRect(x, h / 2 - amp, bw, amp * 2);
+        }
+      }
+
+      function bindAudioWaveform(id, audioEl, canvasEl, cursorEl, timeEl, peaks, fallbackDuration) {
+        allAudioEls.add(audioEl);
+        const state = { audioEl, canvasEl, cursorEl, timeEl, peaks, fallbackDuration, rafId: null };
+        waveformRegistry.set(id, state);
+        drawWaveform(canvasEl, peaks);
+
+        function updateCursor() {
+          const dur = (Number.isFinite(audioEl.duration) && audioEl.duration > 0) ? audioEl.duration : state.fallbackDuration;
+          const cur = Math.min(dur, Math.max(0, audioEl.currentTime || 0));
+          const pct = dur > 0 ? (cur / dur) * 100 : 0;
+          cursorEl.style.left = `calc(${pct.toFixed(3)}% - 1px)`;
+          timeEl.textContent = `${cur.toFixed(1)}s / ${dur.toFixed(1)}s`;
+        }
+
+        function tick() {
+          updateCursor();
+          if (!audioEl.paused && !audioEl.ended) {
+            state.rafId = requestAnimationFrame(tick);
+          } else {
+            state.rafId = null;
+          }
+        }
+
+        function stopRaf() {
+          if (state.rafId !== null) {
+            cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+          }
+        }
+
+        audioEl.addEventListener('play', () => {
+          // Mutually exclusive playback across the whole page
+          allAudioEls.forEach(other => {
+            if (other !== audioEl && !other.paused) other.pause();
+          });
+          stopRaf();
+          state.rafId = requestAnimationFrame(tick);
+        });
+
+        audioEl.addEventListener('pause', () => {
+          stopRaf();
+          updateCursor();
+        });
+
+        audioEl.addEventListener('seeked', () => {
+          updateCursor();
+        });
+
+        audioEl.addEventListener('ended', () => {
+          stopRaf();
+          const dur = (Number.isFinite(audioEl.duration) && audioEl.duration > 0) ? audioEl.duration : state.fallbackDuration;
+          cursorEl.style.left = 'calc(100% - 2px)';
+          timeEl.textContent = `${dur.toFixed(1)}s / ${dur.toFixed(1)}s`;
+        });
+
+        audioEl.addEventListener('loadedmetadata', () => {
+          updateCursor();
+        });
+
+        state.updateCursor = updateCursor;
+        updateCursor();
+      }
+
+      window.addEventListener('resize', () => {
+        waveformRegistry.forEach(st => drawWaveform(st.canvasEl, st.peaks));
+      });
+
+      /* =====================================================================
+       * 5. SPATIAL SWAP SECTION INITIALIZATION & A/B SWITCHING
+       * ===================================================================== */
+      const SPK_1 = { label: 'Spk 1', color: '#0f766e', bg: '#dff4f0' };
+      const SPK_2 = { label: 'Spk 2', color: '#c2591a', bg: '#fdece1' };
+      const SPK_3 = { label: 'Spk 3', color: '#4355b9', bg: '#e7eafc' };
+
+      renderSpatialSvg(document.getElementById('diagramA'), [
+        { ...SPK_1, deg: -45 },
+        { ...SPK_2, deg: +45 }
+      ]);
+      renderSpatialSvg(document.getElementById('diagramB'), [
+        { ...SPK_2, deg: -45 },
+        { ...SPK_1, deg: +45 }
+      ]);
+
+      const swapAudio = document.getElementById('audio-swap');
+      const swapWaveCanvas = document.getElementById('wave-swap');
+      const swapCursor = document.getElementById('cursor-swap');
+      const swapTime = document.getElementById('time-swap');
+      const trackA = createStereoTrack('swapA', 6.0);
+      const trackB = createStereoTrack('swapB', 6.0);
+
+      let currentSwapScene = 'A';
+      let swapSwitchToken = 0;
+
+      swapAudio.src = trackA.url;
+      bindAudioWaveform('swap', swapAudio, swapWaveCanvas, swapCursor, swapTime, trackA.peaks, 6.0);
+
+      function selectSwapScene(scene) {
+        if (scene === currentSwapScene) return;
+        currentSwapScene = scene;
+        const myToken = ++swapSwitchToken;
+        const prevTime = swapAudio.currentTime || 0;
+
+        // Pause immediately, update UI border/bg (150ms CSS transition)
+        swapAudio.pause();
+        const isA = scene === 'A';
+        document.getElementById('sceneBtnA').classList.toggle('is-selected', isA);
+        document.getElementById('sceneBtnB').classList.toggle('is-selected', !isA);
+        document.getElementById('sceneBtnA').setAttribute('aria-pressed', String(isA));
+        document.getElementById('sceneBtnB').setAttribute('aria-pressed', String(!isA));
+        document.getElementById('pillA').textContent = isA ? 'Active' : 'Select';
+        document.getElementById('pillB').textContent = !isA ? 'Active' : 'Select';
+        document.getElementById('ansColA').classList.toggle('is-selected', isA);
+        document.getElementById('ansColB').classList.toggle('is-selected', !isA);
+
+        document.getElementById('activeSceneName').textContent = isA
+          ? 'Scene A · Original (Spk 1 Left / Spk 2 Right)'
+          : 'Scene B · Swapped (Spk 2 Left / Spk 1 Right)';
+
+        const nextTrack = isA ? trackA : trackB;
+        const reg = waveformRegistry.get('swap');
+        if (reg) {
+          reg.peaks = nextTrack.peaks;
+          reg.fallbackDuration = nextTrack.duration;
+          drawWaveform(swapWaveCanvas, nextTrack.peaks);
+        }
+
+        // Immediate source swap; restore time after loadedmetadata (latest click wins)
+        const onMeta = () => {
+          if (myToken !== swapSwitchToken) return;
+          const dur = Number.isFinite(swapAudio.duration) ? swapAudio.duration : nextTrack.duration;
+          swapAudio.currentTime = Math.min(prevTime, dur);
+          if (reg) reg.updateCursor();
+        };
+        swapAudio.addEventListener('loadedmetadata', onMeta, { once: true });
+        swapAudio.src = nextTrack.url;
+        swapAudio.load();
+      }
+
+      document.getElementById('sceneBtnA').addEventListener('click', () => selectSwapScene('A'));
+      document.getElementById('sceneBtnB').addEventListener('click', () => selectSwapScene('B'));
+
+      /* =====================================================================
+       * 6. FIVE TASK EXAMPLES (#task-1 to #task-5)
+       * ===================================================================== */
+      const TASKS_DATA = [
+        {
+          id: 'task-1',
+          type: 'Source Counting',
+          trackKey: 'task1',
+          question: 'How many distinct active speakers appear in this multi-channel recording?',
+          answer: '<strong>3 speakers</strong> (positioned at &minus;60&deg; left, 0&deg; front-center, and +60&deg; right).'
+        },
+        {
+          id: 'task-2',
+          type: 'Direction Localization',
+          trackKey: 'task2',
+          question: 'Which azimuth direction is the speaker located in relative to the microphone array?',
+          answer: '<strong>Front-right (+60&deg;)</strong>, remaining stationary across both utterances.'
+        },
+        {
+          id: 'task-3',
+          type: 'Active-Time Selection',
+          trackKey: 'task3',
+          question: 'Which speaker direction is active during the time window from 2.4 s to 4.3 s?',
+          answer: 'The <strong>right-side speaker (+45&deg;)</strong> is active between 2.4 s and 4.3 s.'
+        },
+        {
+          id: 'task-4',
+          type: 'Temporal Order Comparison',
+          trackKey: 'task4',
+          question: 'Between the speaker on the left (&minus;45&deg;) and the speaker on the right (+45&deg;), who began speaking first?',
+          answer: 'The <strong>right-side speaker (+45&deg;)</strong> began first (at 0.3 s), followed by the left-side speaker (&minus;45&deg;, at 1.9 s).'
+        },
+        {
+          id: 'task-5',
+          type: 'Target Transcription',
+          trackKey: 'task5',
+          question: 'Transcribe only what the speaker on the left (&minus;45&deg;) says while ignoring the overlapping speaker on the right.',
+          answer: '<strong>Reference Target Transcript (Preview):</strong> “Please verify the four-channel calibration log before uploading the test split.”'
+        }
+      ];
+
+      const tasksContainer = document.getElementById('tasksContainer');
+      TASKS_DATA.forEach(item => {
+        const cfg = ASSET_CONFIG.tracks[item.trackKey];
+        const track = createStereoTrack(cfg.preset, cfg.duration);
+
+        const card = document.createElement('article');
+        card.className = 'card task-card';
+        card.id = item.id;
+        card.innerHTML = `
+          <div class="task-type-row">
+            <h3 class="task-type-name">${item.type}</h3>
+            <a class="task-anchor-link" href="#${item.id}" aria-label="Direct link to ${item.type}">#${item.id}</a>
+          </div>
+          <p class="task-question">${item.question}</p>
+          <div class="waveform-wrap" data-wave-id="${item.id}">
+            <canvas class="waveform-canvas" id="wave-${item.id}"></canvas>
+            <div class="waveform-cursor" id="cursor-${item.id}"></div>
+            <span class="waveform-time-badge" id="time-${item.id}">0.0s / ${cfg.duration.toFixed(1)}s</span>
+          </div>
+          <div class="task-audio-row">
+            <audio id="audio-${item.id}" class="native-audio" controls preload="metadata"></audio>
+          </div>
+          <details class="reveal-box">
+            <summary>Reveal answer</summary>
+            <div class="reveal-content">${item.answer}</div>
+          </details>
+        `;
+        tasksContainer.appendChild(card);
+
+        const audioEl = card.querySelector(`#audio-${item.id}`);
+        audioEl.src = track.url;
+        bindAudioWaveform(
+          item.id,
+          audioEl,
+          card.querySelector(`#wave-${item.id}`),
+          card.querySelector(`#cursor-${item.id}`),
+          card.querySelector(`#time-${item.id}`),
+          track.peaks,
+          cfg.duration
+        );
+      });
+
+      /* =====================================================================
+       * 7. RESULTS TABLE (Easy / Medium / Hard / All metrics)
+       *    Model col 300px, single-line, 13px font, scrolls with table
+       * ===================================================================== */
+      const METRIC_GROUPS = {
+        easy: {
+          label: 'Easy',
+          cols: [
+            { key: 'cnt_acc', label: 'Count Acc', sub: '↑ (n=120)' },
+            { key: 'cnt_mae', label: 'Count MAE', sub: '↓ (n=120)' },
+            { key: 'doa_acc', label: 'Dir Acc', sub: '↑ (n=120)' },
+            { key: 'doa_mae', label: 'DoA Err°', sub: '↓ (n=120)' },
+            { key: 'easy_avg', label: 'Easy Avg', sub: '↑ (%)' }
+          ]
+        },
+        medium: {
+          label: 'Medium',
+          cols: [
+            { key: 'act_sel', label: 'Active-Time', sub: '↑ (n=120)' },
+            { key: 'ord_acc', label: 'Order Acc', sub: '↑ (n=120)' },
+            { key: 'ovl_det', label: 'Overlap Det', sub: '↑ (n=120)' },
+            { key: 'dur_cmp', label: 'Dur Compare', sub: '↑ (n=120)' },
+            { key: 'med_avg', label: 'Med Avg', sub: '↑ (%)' }
+          ]
+        },
+        hard: {
+          label: 'Hard',
+          cols: [
+            { key: 'tar_wer', label: 'Target WER', sub: '↓ (%)' },
+            { key: 'tar_cer', label: 'Target CER', sub: '↓ (%)' },
+            { key: 'swap_acc', label: 'Swap Pair', sub: '↑ (n=120)' },
+            { key: 'cross_err', label: 'Crosstalk', sub: '↓ (%)' },
+            { key: 'hard_qa', label: 'Spatial QA', sub: '↑ (n=120)' },
+            { key: 'overall', label: 'Overall', sub: '↑ (16-m)' }
+          ]
+        }
+      };
+
+      const RESULT_ROWS = [
+        { group: 'General Audio LLMs (Mono / Stereo Downmix)' },
+        {
+          model: 'Qwen2-Audio-7B-Instruct (Mono)',
+          vals: { cnt_acc: '54.2*', cnt_mae: '0.62*', doa_acc: '26.7*', doa_mae: '68.4*', easy_avg: '40.5*', act_sel: '31.7*', ord_acc: '48.3*', ovl_det: '51.0*', dur_cmp: '44.2*', med_avg: '43.8*', tar_wer: '64.5*', tar_cer: '49.1*', swap_acc: '11.7*', cross_err: '41.2*', hard_qa: '29.2*', overall: '37.8*' }
+        },
+        {
+          model: 'Gemini-2.5-Pro (Stereo Preview)',
+          vals: { cnt_acc: '71.7*', cnt_mae: '0.35*', doa_acc: '52.5*', doa_mae: '34.8*', easy_avg: '62.1*', act_sel: '58.3*', ord_acc: '65.0*', ovl_det: '66.7*', dur_cmp: '60.8*', med_avg: '62.7*', tar_wer: '39.8*', tar_cer: '28.4*', swap_acc: '38.3*', cross_err: '24.6*', hard_qa: '53.3*', overall: '59.4*' }
+        },
+        { group: 'Cascaded Spatial Front-End + LLM' },
+        {
+          model: 'DoA + Separation + Whisper-v3 + LLM',
+          vals: { cnt_acc: '79.2*', cnt_mae: '0.24*', doa_acc: '76.7*', doa_mae: '14.2*', easy_avg: '78.0*', act_sel: '70.8*', ord_acc: '73.3*', ovl_det: '74.2*', dur_cmp: '69.2*', med_avg: '71.9*', tar_wer: '26.4*', tar_cer: '18.2*', swap_acc: '64.2*', cross_err: '15.8*', hard_qa: '66.7*', overall: '72.2*' }
+        },
+        { group: 'Spatial-Audio Models (Multi-Channel)' },
+        {
+          model: 'Spatial-Omni (0/120 Group A — Verify)',
+          vals: { cnt_acc: '—', cnt_mae: '—', doa_acc: '68.3*', doa_mae: '19.5*', easy_avg: '—', act_sel: '64.2*', ord_acc: '67.5*', ovl_det: '—', dur_cmp: '62.5*', med_avg: '—', tar_wer: '31.2*', tar_cer: '22.9*', swap_acc: '55.0*', cross_err: '19.4*', hard_qa: '60.0*', overall: '—' }
+        },
+        {
+          model: 'Spatial-Omni (0/120 Group B — Verify)',
+          vals: { cnt_acc: '74.2*', cnt_mae: '0.31*', doa_acc: '71.7*', doa_mae: '17.1*', easy_avg: '73.0*', act_sel: '66.7*', ord_acc: '70.0*', ovl_det: '71.7*', dur_cmp: '65.8*', med_avg: '68.6*', tar_wer: '28.9*', tar_cer: '20.5*', swap_acc: '59.2*', cross_err: '17.3*', hard_qa: '63.3*', overall: '68.3*' }
+        },
+        {
+          model: 'Ours (Spatial Audio QA Model)',
+          isOurs: true,
+          vals: { cnt_acc: '88.3*', cnt_mae: '0.13*', doa_acc: '86.7*', doa_mae: '8.6*', easy_avg: '87.5*', act_sel: '82.5*', ord_acc: '84.2*', ovl_det: '85.0*', dur_cmp: '80.8*', med_avg: '83.1*', tar_wer: '16.8*', tar_cer: '11.4*', swap_acc: '81.7*', cross_err: '7.9*', hard_qa: '80.0*', overall: '83.5*' }
+        }
+      ];
+
+      const resultsTable = document.getElementById('resultsTable');
+      const resultsScroll = document.getElementById('resultsTableScroll');
+      const resultsViewNote = document.getElementById('resultsViewNote');
+
+      function renderResultsTable(tabKey) {
+        const isAll = tabKey === 'all';
+        const groupsToShow = isAll
+          ? [METRIC_GROUPS.easy, METRIC_GROUPS.medium, METRIC_GROUPS.hard]
+          : [METRIC_GROUPS[tabKey]];
+
+        const flatCols = groupsToShow.flatMap(g => g.cols);
+        const totalCols = flatCols.length + 1;
+
+        let thead = '<thead>';
+        if (isAll) {
+          thead += '<tr class="group-header"><th class="col-model">Model Group / Name</th>';
+          groupsToShow.forEach(g => {
+            thead += `<th colspan="${g.cols.length}">${g.label}</th>`;
+          });
+          thead += '</tr>';
+        }
+        thead += '<tr><th class="col-model">Model <span class="metric-sub">300 px · single-line</span></th>';
+        flatCols.forEach(c => {
+          thead += `<th>${c.label}<span class="metric-sub">${c.sub}</span></th>`;
+        });
+        thead += '</tr></thead>';
+
+        let tbody = '<tbody>';
+        RESULT_ROWS.forEach(row => {
+          if (row.group) {
+            tbody += `<tr class="model-group-row"><td colspan="${totalCols}">${row.group}</td></tr>`;
+            return;
+          }
+          tbody += `<tr class="${row.isOurs ? 'is-ours' : ''}">`;
+          tbody += `<td class="col-model" title="${row.model}">${row.model}</td>`;
+          flatCols.forEach(c => {
+            const raw = row.vals[c.key] || '—';
+            const cls = raw === '—' ? 'val-missing' : (row.isOurs ? 'val-best' : '');
+            tbody += `<td class="${cls}">${raw}</td>`;
+          });
+          tbody += '</tr>';
+        });
+        tbody += '</tbody>';
+
+        resultsTable.innerHTML = thead + tbody;
+        // Reset horizontal scroll back to first column upon view switch
+        resultsScroll.scrollLeft = 0;
+
+        const labelMap = { easy: 'Easy (5 metrics)', medium: 'Medium (5 metrics)', hard: 'Hard (6 metrics)', all: 'All metrics (16 metrics)' };
+        resultsViewNote.textContent = `Showing ${labelMap[tabKey]} · Scroll table horizontally on narrow screens`;
+      }
+
+      document.querySelectorAll('[data-results-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tab = btn.getAttribute('data-results-tab');
+          document.querySelectorAll('[data-results-tab]').forEach(b => {
+            const active = b === btn;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+          renderResultsTable(tab);
+        });
+      });
+
+      // Default open: Easy
+      renderResultsTable('easy');
+
+      /* =====================================================================
+       * 8. QA PREVIEW VIEW (/demo/) + SCENE SWITCHING + STALE RESPONSE GUARD
+       * ===================================================================== */
+      const DEMO_SCENES = {
+        swapA: {
+          trackKey: 'swapA',
+          speakers: [{ ...SPK_1, deg: -45 }, { ...SPK_2, deg: +45 }],
+          prompts: [
+            'What task did the speaker on the left (-45°) ask to schedule?',
+            'Which direction is Speaker 2 located in?',
+            'How many speakers are active in this clip?'
+          ],
+          cannedAnswer: (q) => `<strong>[QA Preview · Scene A]</strong> Based on the multi-channel spatial cues, Speaker 1 is positioned at <strong>&minus;45&deg; (left)</strong> and Speaker 2 at <strong>+45&deg; (right)</strong>. For your query (“${escapeHtml(q)}”), the left speaker (&minus;45&deg;) requests scheduling the <em>acoustic array calibration</em> for Tuesday morning.`
+        },
+        swapB: {
+          trackKey: 'swapB',
+          speakers: [{ ...SPK_2, deg: -45 }, { ...SPK_1, deg: +45 }],
+          prompts: [
+            'What task did the speaker on the left (-45°) ask to schedule?',
+            'Did the left speaker change compared to Scene A?',
+            'Transcribe the speaker at +45°.'
+          ],
+          cannedAnswer: (q) => `<strong>[QA Preview · Scene B]</strong> With the spatial layout swapped, Speaker 2 is now at <strong>&minus;45&deg; (left)</strong> and Speaker 1 is at <strong>+45&deg; (right)</strong>. For your query (“${escapeHtml(q)}”), the left speaker (&minus;45&deg;) requests scheduling the <em>dataset annotation review</em> for Thursday afternoon.`
+        },
+        meeting3: {
+          trackKey: 'meeting3',
+          speakers: [{ ...SPK_1, deg: -60 }, { ...SPK_3, deg: 0 }, { ...SPK_2, deg: +60 }],
+          prompts: [
+            'How many speakers are in this meeting clip?',
+            'Who speaks from the center (0°) position?',
+            'Order the speakers by when they start talking.'
+          ],
+          cannedAnswer: (q) => `<strong>[QA Preview · 3-Speaker Meeting]</strong> Detected <strong>3 active speakers</strong> at &minus;60&deg; (Spk 1), 0&deg; (Spk 3), and +60&deg; (Spk 2). Turn onset order: Left (&minus;60&deg;, 0.2 s) &rarr; Center (0&deg;, 1.8 s) &rarr; Right (+60&deg;, 3.7 s). Query processed: “${escapeHtml(q)}”.`
+        }
+      };
+
+      function escapeHtml(s) {
+        return s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+      }
+
+      const demoAudio = document.getElementById('audio-demo');
+      const demoCanvas = document.getElementById('wave-demo');
+      const demoCursor = document.getElementById('cursor-demo');
+      const demoTime = document.getElementById('time-demo');
+      const demoSelect = document.getElementById('demoSceneSelect');
+      const demoDiagram = document.getElementById('demoSpatialDiagram');
+      const demoChips = document.getElementById('demoPromptChips');
+      const demoInput = document.getElementById('demoQuestionInput');
+      const demoSubmitBtn = document.getElementById('demoSubmitBtn');
+      const demoStatus = document.getElementById('demoStatus');
+      const demoResponseBox = document.getElementById('demoResponseBox');
+      const demoModeBadge = document.getElementById('demoModeBadge');
+      const simulateErrorToggle = document.getElementById('simulateErrorToggle');
+
+      if (ASSET_CONFIG.liveApiEndpoint) {
+        demoModeBadge.textContent = 'Live QA';
+        demoModeBadge.classList.add('is-live');
+      }
+
+      let demoRequestSeq = 0;
+      let demoInitialized = false;
+
+      function loadDemoScene(sceneId) {
+        const scene = DEMO_SCENES[sceneId] || DEMO_SCENES.swapA;
+        // Invalidate any in-flight request and clear old answer
+        demoRequestSeq++;
+        demoSubmitBtn.disabled = false;
+        demoSubmitBtn.textContent = 'Submit Question';
+        demoStatus.textContent = 'Scene switched · Ready';
+        demoResponseBox.innerHTML = '<p style="margin:0; color:var(--text-muted);">Previous response cleared. Submit a question for the selected scene.</p>';
+
+        renderSpatialSvg(demoDiagram, scene.speakers);
+        demoChips.innerHTML = '';
+        scene.prompts.forEach(p => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'prompt-chip';
+          b.textContent = p;
+          b.addEventListener('click', () => {
+            demoInput.value = p;
+            demoInput.focus();
+          });
+          demoChips.appendChild(b);
+        });
+
+        const cfg = ASSET_CONFIG.tracks[scene.trackKey];
+        const track = createStereoTrack(cfg.preset, cfg.duration);
+        demoAudio.pause();
+        demoAudio.src = track.url;
+        demoAudio.load();
+
+        if (!demoInitialized) {
+          bindAudioWaveform('demo', demoAudio, demoCanvas, demoCursor, demoTime, track.peaks, cfg.duration);
+          demoInitialized = true;
+        } else {
+          const reg = waveformRegistry.get('demo');
+          if (reg) {
+            reg.peaks = track.peaks;
+            reg.fallbackDuration = cfg.duration;
+            drawWaveform(demoCanvas, track.peaks);
+            reg.updateCursor();
+          }
+        }
+      }
+
+      demoSelect.addEventListener('change', () => loadDemoScene(demoSelect.value));
+
+      function runQaQuery() {
+        const q = demoInput.value.trim();
+        if (!q) {
+          demoStatus.textContent = 'Please enter a question first';
+          demoInput.focus();
+          return;
+        }
+        const sceneId = demoSelect.value;
+        const mySeq = ++demoRequestSeq;
+
+        demoSubmitBtn.disabled = true;
+        demoSubmitBtn.textContent = 'Generating...';
+        demoStatus.textContent = 'Generating response...';
+
+        setTimeout(() => {
+          // Ignore stale response if scene changed or newer request started
+          if (mySeq !== demoRequestSeq) return;
+
+          demoSubmitBtn.disabled = false;
+          demoSubmitBtn.textContent = 'Submit Question';
+
+          if (simulateErrorToggle.checked) {
+            demoStatus.textContent = 'Request timed out';
+            demoResponseBox.innerHTML = `
+              <div class="demo-error-box">
+                <span>Inference request timed out or service unavailable.</span>
+                <button type="button" class="btn btn-secondary" id="retryQaBtn">Retry</button>
+              </div>
+            `;
+            const retryBtn = document.getElementById('retryQaBtn');
+            if (retryBtn) {
+              retryBtn.addEventListener('click', () => {
+                simulateErrorToggle.checked = false;
+                runQaQuery();
+              });
+            }
+            return;
+          }
+
+          demoStatus.textContent = 'Response ready';
+          const scene = DEMO_SCENES[sceneId] || DEMO_SCENES.swapA;
+          demoResponseBox.innerHTML = `<p class="demo-response-text">${scene.cannedAnswer(q)}</p>`;
+        }, 550);
+      }
+
+      document.getElementById('demoQaForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        runQaQuery();
+      });
+
+      /* =====================================================================
+       * 9. NAVIGATION, VIEW SWITCHING, HASH ANCHORS & BIBTEX COPY
+       * ===================================================================== */
+      const projectView = document.getElementById('projectView');
+      const demoView = document.getElementById('demoView');
+      const mainNav = document.getElementById('mainNav');
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const openDemoBtn = document.getElementById('openDemoBtn');
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('is-visible');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('is-visible'), 2600);
+      }
+
+      function pauseAllAudio() {
+        allAudioEls.forEach(a => { if (!a.paused) a.pause(); });
+      }
+
+      function switchToView(viewName, hashTarget) {
+        pauseAllAudio();
+        const isDemo = viewName === 'demo';
+        projectView.classList.toggle('view-hidden', isDemo);
+        demoView.classList.toggle('view-hidden', !isDemo);
+        openDemoBtn.classList.toggle('is-active', isDemo);
+
+        if (isDemo) {
+          if (!demoInitialized) loadDemoScene(demoSelect.value);
+          else {
+            const reg = waveformRegistry.get('demo');
+            if (reg) drawWaveform(reg.canvasEl, reg.peaks);
+          }
+          window.scrollTo({ top: 0, behavior: 'auto' });
+          try { history.replaceState(null, '', '#demo'); } catch (_) {}
+        } else {
+          // Redraw project waveforms in case container resized while hidden
+          waveformRegistry.forEach((st, key) => {
+            if (key !== 'demo') drawWaveform(st.canvasEl, st.peaks);
+          });
+          if (hashTarget) {
+            const target = document.querySelector(hashTarget);
+            if (target) {
+              try { history.pushState(null, '', hashTarget); } catch (_) {}
+              target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+            }
+          } else {
+            try { history.replaceState(null, '', '#top'); } catch (_) {}
+            window.scrollTo({ top: 0, behavior: 'auto' });
+          }
+        }
+        mainNav.classList.remove('is-open');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      openDemoBtn.addEventListener('click', () => switchToView('demo'));
+      document.getElementById('footerOpenDemoBtn').addEventListener('click', () => switchToView('demo'));
+      document.getElementById('backToProjectBtn').addEventListener('click', () => switchToView('project', '#top'));
+
+      document.querySelectorAll('a[data-nav="project"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (!demoView.classList.contains('view-hidden')) {
+            e.preventDefault();
+            switchToView('project', href);
+          } else {
+            mainNav.classList.remove('is-open');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      document.getElementById('brandLink').addEventListener('click', (e) => {
+        if (!demoView.classList.contains('view-hidden')) {
+          e.preventDefault();
+          switchToView('project', '#top');
+        }
+      });
+
+      mobileMenuBtn.addEventListener('click', () => {
+        const open = mainNav.classList.toggle('is-open');
+        mobileMenuBtn.setAttribute('aria-expanded', String(open));
+      });
+
+      document.querySelectorAll('[data-pending-link]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const name = btn.getAttribute('data-pending-link');
+          showToast(`${name} link will be added upon formal release.`);
+        });
+      });
+
+      document.getElementById('copyBibtexBtn').addEventListener('click', () => {
+        const text = document.getElementById('bibtexText').textContent;
+        const done = () => showToast('BibTeX copied to clipboard.');
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+        } else {
+          fallbackCopy(text, done);
+        }
+      });
+
+      function fallbackCopy(text, onDone) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); onDone(); } catch (_) { showToast('Copy not supported in this browser.'); }
+        document.body.removeChild(ta);
+      }
+
+      // Direct hash load: jump immediately without smooth scroll lag
+      if (window.location.hash === '#demo') {
+        switchToView('demo');
+      } else if (window.location.hash) {
+        const el = document.querySelector(window.location.hash);
+        if (el) el.scrollIntoView({ behavior: 'auto' });
+      }
+    })();
+  </script>
+</body>
+</html>
